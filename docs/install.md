@@ -1,10 +1,10 @@
 # 安装、授权与首次使用
 
-适用于 macOS Meeting Recorder 0.9.2，作者 [@nalansitan](https://github.com/nalansitan)。
+适用于 macOS Meeting Recorder 的 DMG 发布版，作者 [@nalansitan](https://github.com/nalansitan)。
 
 ## 下载与系统要求
 
-从 [GitHub Releases](https://github.com/nalansitan/macos-meeting-recorder/releases) 下载 `macos-meeting-recorder-0.9.2-macos-arm64.dmg`。`Source code` 是源码，不是安装包。
+从 [GitHub Releases](https://github.com/nalansitan/macos-meeting-recorder/releases) 下载 `macos-meeting-recorder-<版本>-macos-arm64.dmg`。`Source code` 是源码，不是安装包。
 
 - Apple Silicon Mac（M 系列）；不支持 Intel 安装包。
 - macOS 15 或更新版本可以录音；离线实时字幕需要 macOS 26 或更新版本。
@@ -70,4 +70,4 @@ brew install python ffmpeg
 
 音频、字幕、声纹和姓名在本机处理，本应用不上传会议内容。系统音轨也会包含其他应用的播放声音。当前不提供自动会议摘要或待办提取。
 
-更完整的功能、恢复边界和验证记录见 [使用与技术说明](https://github.com/nalansitan/macos-meeting-recorder/blob/v0.9.2/docs/usage.md)。问题反馈：https://github.com/nalansitan/macos-meeting-recorder/issues
+更完整的功能、恢复边界和验证记录见 [使用与技术说明](https://github.com/nalansitan/macos-meeting-recorder/blob/main/docs/usage.md)。问题反馈：https://github.com/nalansitan/macos-meeting-recorder/issues

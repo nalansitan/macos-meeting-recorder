@@ -79,7 +79,29 @@ bash scripts/test-playback.sh
 
 ## 打包发布
 
-运行 `bash scripts/package-dmg.sh` 会重新构建，并在 `build/releases/v<版本>/` 生成 DMG、SHA256SUMS、安装说明和构建信息。DMG 包含 Applications 快捷方式，不包含运行依赖或模型。同版本 DMG 已存在时脚本拒绝覆盖。发布前应提交代码并检查测试，再为该提交创建对应版本标签。
+首次准备：安装并登录 GitHub CLI（`brew install gh`、`gh auth login`），确保具有仓库写权限。
+
+每次发新版，先更新 `Info.plist` 中的版本号和递增构建号，新增对应的 `docs/releases/v<版本>.md` 发布说明，并把代码和说明提交到默认分支。然后一条命令：
+
+```sh
+bash scripts/release.sh
+```
+
+脚本会依次检查版本、干净工作区、账号权限及标签，运行回归测试，构建 DMG，原子推送默认分支和版本标签，用 `gh` 创建草稿并上传 DMG、SHA256SUMS、安装说明、发布说明和构建信息。所有附件的远端 SHA-256 校验通过后才公开为最新版本。
+
+```sh
+bash scripts/release.sh --check       # 仅检查，不构建或推送
+bash scripts/release.sh --draft       # 构建上传后停留在草稿
+bash scripts/release.sh --prerelease  # 发布为预发布，不设为 Latest
+```
+
+失败后可重跑同一命令：同一提交的完整本地包可以复用，草稿中校验一致的附件会跳过。脚本不会覆盖已经公开的版本、移动已有标签或强制推送。若本地包不完整或属于其他提交，请先检查并移走对应 `build/releases/v<版本>/` 目录后重试；若草稿附件内容不一致，请人工核查，脚本不会自动删除远端文件。请勿同时运行多个发布进程。
+
+只生成本地包可运行 `bash scripts/package-dmg.sh`；产物位于 `build/releases/v<版本>/`。DMG 包含 Applications 快捷方式和离线说明，不包含 Python、FFmpeg 或模型。打包仍为临时签名，不会自动完成 Developer ID 签名或 Apple 公证。录音、授权和真实会议效果仍需现场验收。
+
+## 开发协作
+
+项目由 [@nalansitan](https://github.com/nalansitan) 维护，使用 OpenAI Codex 辅助开发、测试和文档整理。此说明用于披露工具参与，不代表 OpenAI 官方维护或背书。
 
 ## 许可证
 
