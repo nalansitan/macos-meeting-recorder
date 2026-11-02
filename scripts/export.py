@@ -243,8 +243,13 @@ def subtitle_export(folder, destination, duration):
 
 def export(folder, ffmpeg=None, title=None):
     folder = Path(folder).resolve()
-    ffmpeg = ffmpeg or shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg"
-    if not Path(ffmpeg).is_file():
+    if ffmpeg is None:
+        ffmpeg = shutil.which("ffmpeg") or next(
+            (candidate for directory in ("/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin")
+             if (candidate := shutil.which("ffmpeg", path=directory))), None)
+    else:
+        ffmpeg = shutil.which(str(ffmpeg))
+    if ffmpeg is None:
         raise ValueError("未找到 FFmpeg，请安装后重试")
     with (folder / "export.lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -318,9 +323,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("folder", type=Path)
     parser.add_argument("--title", help="会议名称；留空使用 meeting.m4a，省略则沿用上次名称")
+    parser.add_argument("--ffmpeg", help="FFmpeg 可执行文件路径；默认自动查找")
     args = parser.parse_args()
     try:
-        result = export(args.folder, title=args.title)
+        result = export(args.folder, ffmpeg=args.ffmpeg, title=args.title)
         for warning in result["warnings"]:
             print(warning)
         if result.get("subtitle_file"):

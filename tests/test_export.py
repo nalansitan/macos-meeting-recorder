@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 import unittest
 import wave
@@ -36,6 +37,21 @@ class ExportTests(unittest.TestCase):
                                "-map", "0:a:0", "-f", "s16le", "-"],
                               check=True, capture_output=True).stdout
         return struct.unpack("<%dh" % (len(data) // 2), data)
+
+    def test_cli_accepts_resolved_ffmpeg_path(self):
+        self.fragment("mic.caf", 8000)
+        self.manifest([{"file": "mic.caf", "track": "microphone", "start": 0}], duration=0.25)
+        result = subprocess.run([sys.executable, str(Path(module.__file__)), str(self.root),
+                                 "--ffmpeg", shutil.which("ffmpeg"), "--title", ""],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.root / "meeting.m4a").is_file())
+
+    def test_missing_explicit_ffmpeg_preserves_fragments(self):
+        self.fragment("mic.caf", 8000)
+        with self.assertRaisesRegex(ValueError, "未找到 FFmpeg"):
+            module.export(self.root, ffmpeg=str(self.root / "missing-ffmpeg"))
+        self.assertTrue((self.root / "mic.caf").is_file())
 
     def test_delayed_start_pause_and_shared_end(self):
         self.fragment("mic.caf", 8000)

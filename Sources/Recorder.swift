@@ -3,6 +3,22 @@ import AVFoundation
 import ScreenCaptureKit
 import SwiftUI
 
+// Finder-launched apps often have a minimal PATH. Search common package-manager
+// locations as well, while respecting an explicitly inherited PATH.
+func recordingExecutable(_ name: String) -> URL? {
+    let directories = (ProcessInfo.processInfo.environment["PATH"] ?? "")
+        .split(separator: ":").map(String.init) + ["/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin", "/usr/bin", "/bin"]
+    var candidates = directories.filter { $0.hasPrefix("/") }
+        .map { URL(fileURLWithPath: $0, isDirectory: true).appendingPathComponent(name) }
+    // Apple's python3 may be a developer-tools launcher on a fresh Mac. Prefer
+    // an installed interpreter before that fallback, even with Finder's PATH.
+    if name == "python3" {
+        candidates.removeAll { $0.path == "/usr/bin/python3" }
+        candidates.append(URL(fileURLWithPath: "/usr/bin/python3"))
+    }
+    return candidates.first { FileManager.default.isExecutableFile(atPath: $0.path) }
+}
+
 @MainActor final class Recorder: ObservableObject {
     @Published var recording = false
     @Published var paused = false
@@ -492,9 +508,15 @@ import SwiftUI
         }
         let result: (Bool, String) = await Task.detached {
             do {
+                guard let python = recordingExecutable("python3") else {
+                    return (false, "自动保存失败：未找到 Python 3，请安装后重试。原始片段已保留。")
+                }
+                guard let ffmpeg = recordingExecutable("ffmpeg") else {
+                    return (false, "自动保存失败：未找到 FFmpeg，请安装后重试。原始片段已保留。")
+                }
                 let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
-                process.arguments = [script.path, folder.path, "--title", title]
+                process.executableURL = python
+                process.arguments = [script.path, folder.path, "--title", title, "--ffmpeg", ffmpeg.path]
                 let pipe = Pipe(); process.standardError = pipe; process.standardOutput = pipe
                 try process.run()
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()

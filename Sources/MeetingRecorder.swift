@@ -164,6 +164,21 @@ private struct CaptionTranscriptView: View, Equatable {
                 if scenePhase == .active { Task { await recorder.refreshCaptionModel() } }
             }
         }.defaultSize(width: 860, height: 780)
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("关于会议录音") {
+                    let credits = NSMutableAttributedString(string: "作者：")
+                    credits.append(NSAttributedString(string: "@nalansitan", attributes: [
+                        .link: URL(string: "https://github.com/nalansitan")!
+                    ]))
+                    credits.append(NSAttributedString(string: "\nApache License 2.0 · "))
+                    credits.append(NSAttributedString(string: "项目主页", attributes: [
+                        .link: URL(string: "https://github.com/nalansitan/macos-meeting-recorder")!
+                    ]))
+                    NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
+                }
+            }
+        }
     }
 
     private var header: some View {

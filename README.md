@@ -30,6 +30,10 @@
 
 macOS 15 可关闭字幕后使用录音功能。当前仅面向 Apple Silicon，尚未验证 Intel Mac。
 
+## 下载安装包
+
+从 [GitHub Releases](https://github.com/nalansitan/macos-meeting-recorder/releases) 下载 Apple Silicon DMG。当前版本使用临时签名，未经 Apple 公证；导出仍需本机安装 Python 3 和 FFmpeg。请先阅读 [安装、授权与首次使用](docs/install.md)，DMG 内也附有离线说明。
+
 ## 构建与启动
 
 在本仓库根目录执行：
@@ -45,6 +49,8 @@ open build/会议录音.app
 ditto "build/会议录音.app" "/Applications/会议录音.app"
 open -a "会议录音"
 ```
+
+导出时会从 PATH 及 Homebrew、MacPorts 等常见安装目录查找 Python 3 和 FFmpeg；二者仍需自行安装。
 
 首次录音需要允许麦克风及屏幕与系统音频录制权限。重新构建后的临时签名可能需要重新授权。
 
@@ -70,6 +76,10 @@ bash scripts/test-playback.sh
 ```
 
 这些测试不采集麦克风；回听测试会播放生成的静音音频。真实设备、长会议、蓝牙切换和多人重叠讲话仍需现场验证。说话人识别为辅助功能，短句、相似声音及重叠语音可能无法可靠区分。当前不提供自动会议摘要或待办提取。
+
+## 打包发布
+
+运行 `bash scripts/package-dmg.sh` 会重新构建，并在 `build/releases/v<版本>/` 生成 DMG、SHA256SUMS、安装说明和构建信息。DMG 包含 Applications 快捷方式，不包含运行依赖或模型。同版本 DMG 已存在时脚本拒绝覆盖。发布前应提交代码并检查测试，再为该提交创建对应版本标签。
 
 ## 许可证
 
