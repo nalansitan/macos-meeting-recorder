@@ -1,0 +1,11 @@
+Local speaker recognition uses FluidAudio by Fluid Inference and contributors.
+SDK source: https://github.com/FluidInference/FluidAudio
+Pinned SDK revision: e15287985625dbf544a343df679436789ffb03fb
+SDK license: Apache-2.0 (included as FluidAudio-LICENSE.txt).
+
+Core ML models are downloaded only on explicit user action from:
+https://huggingface.co/FluidInference/speaker-diarization-coreml
+The pipeline uses pyannote segmentation and WeSpeaker speaker embeddings.
+Model authors and upstream terms are recorded on the model repository/model card;
+format conversion does not replace upstream model licenses.
+No audio, speaker embeddings, or names are uploaded for inference.
