@@ -1,6 +1,6 @@
 # 第三方依赖与模型
 
-项目的 MIT 许可证仅适用于本项目原创代码，不替代第三方许可。
+项目的 Apache-2.0 许可证仅适用于本项目原创代码，不替代第三方许可。
 
 - **FluidAudio**：固定提交见 `Package.swift` / `Package.resolved`；SDK 使用 Apache-2.0。构建时将上游许可证复制到应用资源中的 `FluidAudio-LICENSE.txt`。
 - **说话人模型**：Pyannote segmentation 与 WeSpeaker embeddings 的 Core ML 转换模型通过用户操作从 Hugging Face 下载或本地导入。模型权重不在源码仓库中分发；模型作者和使用条款以对应模型卡及上游许可为准。详见 [模型说明](Resources/Speaker-Models-NOTICE.txt)。

@@ -73,4 +73,4 @@ bash scripts/test-playback.sh
 
 ## 许可证
 
-本项目原创代码使用 [MIT License](LICENSE)。第三方依赖及模型遵循各自的许可，详见 [第三方说明](THIRD_PARTY_NOTICES.md)。模型权重不随源码仓库分发。
+本项目原创代码使用 [Apache License 2.0](LICENSE)。第三方依赖及模型遵循各自的许可，详见 [第三方说明](THIRD_PARTY_NOTICES.md)。模型权重不随源码仓库分发。
